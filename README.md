@@ -1,44 +1,117 @@
-Report for Q2: Real-Time Weather Monitoring System
-# Objective:
-The task was to design and implement a real-time weather monitoring system with multiple weather stations sending continuous weather data to a central server. The system is designed to handle high data throughput, adapt to network conditions, and employ dynamic data compression to manage the large volume of data without overwhelming the server.
+# **Network Router Switch Fabric Simulation - README**
 
-Implementation:
-Client-Side (Weather Station) Code:
+## **Project Overview**
 
-Weather Data Fetching: Each weather station retrieves real-time weather data using the OpenWeatherMap API for the city of Guwahati. The data includes temperature, humidity, and air pressure in JSON format.
+This project simulates a network router switch fabric with 8 input and 8 output ports. The primary focus is on analyzing the performance of four scheduling algorithms:
 
-Dynamic Compression: The retrieved weather data is compressed using the zlib compression library (zlib.h) before being transmitted to the server. This compression reduces the data size to optimize network bandwidth usage.
+- **Priority Scheduling**
+- **Weighted Fair Queuing (WFQ)**
+- **Round Robin (RR)**
+- **iSLIP**
 
-Data Transmission: The weather station connects to the central server via TCP (socket programming) and sends the compressed weather data in real-time, simulating continuous monitoring. A delay of 10 seconds is implemented between each transmission to emulate real-time updates.
+The simulation evaluates these algorithms under three traffic patterns (Uniform, Non-uniform, and Bursty) and compares their performance using the following metrics:
 
-Key Functions:
+- **Queue Throughput**
+- **Turnaround Time**
+- **Waiting Time**
+- **Buffer Occupancy**
+- **Packet Drop Rate**
 
-fetchWeatherData(): Fetches real-time weather data using the libcurl library.
-compressData(): Compresses the fetched data using zlib for efficient transmission.
-Server-Side Code:
+The project is written in C++ and demonstrates the capabilities of different scheduling algorithms to manage high-throughput traffic while ensuring fairness and efficiency in packet processing.
 
-Handling Multiple Clients: The server is designed to handle multiple weather stations (clients) concurrently using multi-threading. Each client connection spawns a new thread to manage data transmission independently, ensuring that the server can handle multiple incoming streams of weather data without being overwhelmed.
+---
 
-Decompression: The server receives the compressed weather data from the stations and decompresses it using the zlib library. The decompressed data is then processed and displayed in the console.
+## **Project Structure**
 
-TCP Connections: The server establishes TCP connections with the weather stations, ensuring reliable and ordered data transmission.
+The project consists of the following files:
 
-Key Functions:
+1. **`main.cpp`**:  
+   The main simulation file containing the implementation of the four scheduling algorithms and traffic patterns. This file includes the classes and methods for handling the router switch fabric and processing the packets.
+2. **`Makefile`**:  
+   A `Makefile` is included to compile the project easily using the `make` command.
+3. **`README.md`**:  
+   This file provides an overview of the project, how to run the code, and details on the simulation.
 
-decompressData(): Decompresses the received data using zlib.
-handleClient(): Manages communication with each weather station by receiving, decompressing, and displaying the weather data.
-Congestion Control:
+4. **`cn_lab_04.pdf`**:  
+   A detailed lab report comparing the performance of the four scheduling algorithms and analyzing the simulation results under different traffic conditions.
 
-Although the TCP Reno congestion control mechanism is implemented natively by the TCP protocol stack in most systems, the task description required that the weather stations adjust their data transmission rate based on network conditions. In this case, TCP Reno ensures adaptive transmission rates under varying network conditions to avoid overloading the server and prevent network congestion.
-Network Adaptability:
+---
 
-The server simulates a constrained network environment where available bandwidth is limited. The system adapts to this by ensuring that weather stations adjust their transmission rates and compress data dynamically, helping to manage the flow of information efficiently.
-Dynamic Data Compression:
+### **Compiling the Code**
 
-The weather station compresses the data before transmission, and the server decompresses it upon receipt. The compression adapts dynamically based on the amount of data, reducing data size to maintain efficient transmission speeds without sacrificing too much processing time.
-Results:
-Efficient Data Handling: The system successfully handled data from multiple weather stations simultaneously without overwhelming the server. The use of multi-threading ensured that each station’s data was processed concurrently.
+To compile the project, open a terminal and navigate to the project directory. Run the following command:
 
-Compression: The dynamic data compression feature significantly reduced the data size, optimizing bandwidth usage and ensuring timely data delivery.
+```bash
+make
+```
 
-Network Adaptability: The system demonstrated the ability to adapt to limited network conditions by using TCP Reno for congestion control and compressing data efficiently to avoid network overload.
+This command compiles the `main.cpp` file and creates an executable named `network_sim`.
+
+### **Running the Simulation**
+
+Once compiled, run the simulation using the following command:
+
+```bash
+./ps
+./rr
+./wfq
+./iSlip
+```
+
+By default, the simulation will run with 8 input/output ports, a buffer size of 64 packets, and simulate 2000 packets. You can modify the parameters directly in the `main.cpp` file to simulate different traffic patterns.
+
+---
+
+
+
+### **Traffic Models**
+
+The code simulates three types of traffic patterns:
+
+1. **Uniform Traffic**: Even distribution of packets across all ports.
+2. **Non-uniform Traffic**: Some ports receive higher-priority traffic, while others receive low-priority traffic.
+3. **Bursty Traffic**: Certain ports experience random bursts of traffic, simulating peak loads.
+
+### **Performance Metrics**
+
+The code collects and outputs the following performance metrics:
+
+- **Queue Throughput**
+- **Turnaround Time**
+- **Waiting Time**
+- **Buffer Occupancy**
+- **Packet Drop Rate**
+
+---
+
+## **Modifying the Simulation**
+
+You can modify the simulation parameters (e.g., the number of packets, buffer size, traffic type, and port weights) by adjusting the relevant variables in the `main.cpp` file:
+
+- **Traffic Type**:
+
+  - `TRAFFIC_TYPE = 0`: Uniform Traffic
+  - `TRAFFIC_TYPE = 1`: Non-uniform Traffic
+  - `TRAFFIC_TYPE = 2`: Bursty Traffic
+
+- **Port Weights**:  
+   Modify the `portWeights` vector to assign different weights to the queues in the WFQ algorithm.
+
+---
+
+## **Cleaning Up**
+
+To remove the compiled files and reset the project directory, run:
+
+```bash
+make clean
+```
+
+---
+
+## **Known Issues**
+
+- Ensure that your system has a functional C++ compiler and the `make` utility installed.
+- Adjust the simulation parameters (e.g., number of packets, buffer size) to match the performance limits of your system.
+
+---
